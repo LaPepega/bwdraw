@@ -2,6 +2,13 @@
 name = "bwdraw"
 version = "0.1.0"
 edition = "2021"
+authors = ["LaPepega <tmv03092008@gmail.com>"]
+description = "Terminal drawing library whithout y-axis stretching"
+repository = "https://github.com/TheNickOfMax/bwdraw"
+readme = "README.md"
+license = "MIT"
+keywords = ["graphics", "ASCII", "terminal"]
+categories = ["command-line-utilities"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
