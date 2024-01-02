@@ -43,6 +43,14 @@ impl From<(Vec<bool>, Vec<bool>)> for Row {
         Row(pixels)
     }
 }
+impl Into<(Vec<bool>, Vec<bool>)> for Row {
+    fn into(self) -> (Vec<bool>, Vec<bool>) {
+        self.0
+            .into_iter()
+            .map(|pixel| (pixel.upper, pixel.lower))
+            .unzip()
+    }
+}
 
 impl Into<String> for Row {
     fn into(self) -> String {
