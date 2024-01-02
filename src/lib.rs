@@ -10,12 +10,6 @@
 //! - `LOWER_C`: Lower half-filled character ('▄')
 //! - `EMPTY_C`: Empty character (' ')
 //!
-//! ## Usage
-//!
-//! - Create a new canvas with a specified width and height using `Canvas::new(width, height)`.
-//! - Modify pixels or set their states using `set_pixel` or `set` methods.
-//! - Convert the canvas to a string representation using `to_string()`.
-//!
 //! ## Examples
 //!
 //! ```rust
