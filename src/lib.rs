@@ -75,6 +75,16 @@ impl Picture {
     pub fn set_pixel(&mut self, x: usize, y: usize, pixel: Pixel) {
         self.0[y].0[x] = pixel;
     }
+impl Into<Vec<Vec<bool>>> for Picture {
+    fn into(self) -> Vec<Vec<bool>> {
+        self.0
+            .into_iter()
+            .flat_map(|row| {
+                let t: (Vec<bool>, Vec<bool>) = row.into();
+                vec![t.0, t.1]
+            })
+            .collect()
+    }
 }
 
 impl From<Vec<Vec<bool>>> for Picture {
