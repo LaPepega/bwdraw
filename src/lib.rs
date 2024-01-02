@@ -4,7 +4,7 @@ const UPPER_C: char = '▀';
 const EMPTY_C: char = ' ';
 
 #[derive(Debug, Clone)]
-struct Pixel {
+pub struct Pixel {
     upper: bool,
     lower: bool,
 }
@@ -30,7 +30,7 @@ impl Into<char> for Pixel {
 }
 
 #[derive(Debug, Clone)]
-struct Row(Vec<Pixel>);
+pub struct Row(Vec<Pixel>);
 
 impl From<(Vec<bool>, Vec<bool>)> for Row {
     fn from(value: (Vec<bool>, Vec<bool>)) -> Self {
@@ -57,7 +57,17 @@ impl Into<String> for Row {
     }
 }
 
-struct Picture(Vec<Row>);
+pub struct Picture(Vec<Row>);
+
+impl Picture {
+    pub fn new(width: usize, height: usize) -> Self {
+        Picture::from(vec![vec![false; width]; height])
+    }
+
+    pub fn set_pixel(&mut self, x: usize, y: usize, pixel: Pixel) {
+        self.0[y].0[x] = pixel;
+    }
+}
 
 impl From<Vec<Vec<bool>>> for Picture {
     fn from(value: Vec<Vec<bool>>) -> Self {
