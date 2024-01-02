@@ -38,10 +38,10 @@
 //!
 //! The library also provides a `clear` function, which clears the console screen using ANSI escape codes.
 
-const FULL_C: char = '█';
-const LOWER_C: char = '▄';
-const UPPER_C: char = '▀';
-const EMPTY_C: char = ' ';
+pub const FULL_C: char = '█';
+pub const LOWER_C: char = '▄';
+pub const UPPER_C: char = '▀';
+pub const EMPTY_C: char = ' ';
 
 /// Represents a single pixel in the drawing canvas.
 ///
