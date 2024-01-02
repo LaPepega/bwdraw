@@ -73,6 +73,11 @@ impl Picture {
         Picture::from(vec![vec![false; width]; height])
     }
 
+    pub fn to_string(&self) -> String {
+        let s: String = self.clone().into();
+        s
+    }
+
     pub fn set_pixel(&mut self, x: usize, y: usize, pixel: Pixel) {
         self.0[y].0[x] = pixel;
     }
