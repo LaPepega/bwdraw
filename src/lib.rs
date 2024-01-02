@@ -65,6 +65,7 @@ impl Into<String> for Row {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct Picture(Vec<Row>);
 
 impl Picture {
@@ -75,6 +76,15 @@ impl Picture {
     pub fn set_pixel(&mut self, x: usize, y: usize, pixel: Pixel) {
         self.0[y].0[x] = pixel;
     }
+
+    pub fn set(&mut self, x: usize, y: usize, state: bool) {
+        let mut subpixeled: Vec<Vec<bool>> = self.clone().into();
+        subpixeled[y][x] = state;
+        let new_pic = Picture::from(subpixeled);
+        *self = new_pic;
+    }
+}
+
 impl Into<Vec<Vec<bool>>> for Picture {
     fn into(self) -> Vec<Vec<bool>> {
         self.0
