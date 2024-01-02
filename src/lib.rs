@@ -3,6 +3,10 @@ const LOWER_C: char = '▄';
 const UPPER_C: char = '▀';
 const EMPTY_C: char = ' ';
 
+/// Represents a single pixel in the drawing canvas.
+///
+/// Each pixel can have an upper and lower state, to be converted into a character
+/// representation based on its state using the [`Into<char>`] trait.
 #[derive(Debug, Clone)]
 pub struct Pixel {
     upper: bool,
@@ -29,6 +33,10 @@ impl Into<char> for Pixel {
     }
 }
 
+/// Represents a row of pixels in the drawing canvas.
+///
+/// Each row is composed of a vector of `Pixel` instances and
+/// can be converted into a string using the `Into<String>` trait.
 #[derive(Debug, Clone)]
 pub struct Row(Vec<Pixel>);
 
@@ -43,6 +51,7 @@ impl From<(Vec<bool>, Vec<bool>)> for Row {
         Row(pixels)
     }
 }
+
 impl Into<(Vec<bool>, Vec<bool>)> for Row {
     fn into(self) -> (Vec<bool>, Vec<bool>) {
         self.0
@@ -65,6 +74,10 @@ impl Into<String> for Row {
     }
 }
 
+/// Represents the drawing canvas, composed of rows of pixels.
+///
+/// The canvas can be initialized with a specified width and height, and it provides methods
+/// for modifying and converting its content.
 #[derive(Debug, Clone)]
 pub struct Canvas(Vec<Row>);
 
@@ -140,6 +153,9 @@ impl Into<String> for Canvas {
     }
 }
 
+/// Clears the console screen.
+///
+/// This function sends ANSI escape codes to clear the console screen.
 pub fn clear() {
     print!("{}[2J", 27 as char);
     print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
