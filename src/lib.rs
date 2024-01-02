@@ -66,11 +66,11 @@ impl Into<String> for Row {
 }
 
 #[derive(Debug, Clone)]
-pub struct Picture(Vec<Row>);
+pub struct Canvas(Vec<Row>);
 
-impl Picture {
+impl Canvas {
     pub fn new(width: usize, height: usize) -> Self {
-        Picture::from(vec![vec![false; width]; height])
+        Canvas::from(vec![vec![false; width]; height])
     }
 
     pub fn to_string(&self) -> String {
@@ -85,12 +85,12 @@ impl Picture {
     pub fn set(&mut self, x: usize, y: usize, state: bool) {
         let mut subpixeled: Vec<Vec<bool>> = self.clone().into();
         subpixeled[y][x] = state;
-        let new_pic = Picture::from(subpixeled);
+        let new_pic = Canvas::from(subpixeled);
         *self = new_pic;
     }
 }
 
-impl Into<Vec<Vec<bool>>> for Picture {
+impl Into<Vec<Vec<bool>>> for Canvas {
     fn into(self) -> Vec<Vec<bool>> {
         self.0
             .into_iter()
@@ -102,7 +102,7 @@ impl Into<Vec<Vec<bool>>> for Picture {
     }
 }
 
-impl From<Vec<Vec<bool>>> for Picture {
+impl From<Vec<Vec<bool>>> for Canvas {
     fn from(value: Vec<Vec<bool>>) -> Self {
         // add a vec of falses if number of subpixels is false
         let longed = if value.len() % 2 == 0 {
@@ -123,11 +123,11 @@ impl From<Vec<Vec<bool>>> for Picture {
             .map(|chunk| (chunk[0].clone(), chunk[1].clone()))
             .collect();
         let rows = paired.iter().map(|p| Row::from(p.clone())).collect();
-        Picture(rows)
+        Canvas(rows)
     }
 }
 
-impl Into<String> for Picture {
+impl Into<String> for Canvas {
     fn into(self) -> String {
         self.0
             .iter()
@@ -165,7 +165,7 @@ mod tests {
 
         let expected_output = "";
 
-        let picture: Picture = input.into();
+        let picture: Canvas = input.into();
         let output_string: String = picture.into();
 
         assert_eq!(output_string, expected_output);
