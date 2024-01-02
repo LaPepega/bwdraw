@@ -1,3 +1,43 @@
+//! # bwdraw
+//!
+//! `bwdraw` is a Rust library designed for simple black and white 2D drawing in the terminal. It uses half-filled characters as pixels, allowing for a square-shaped representation without stretching the y-axis. The library provides a convenient way to draw with half-filled ASCII characters by representing the canvas as a grid of booleans and converting them into characters accordingly.
+//!
+//! ## Pixel Representation
+//!
+//! The library uses the concept of `DuoPixel`, where each pixel has upper and lower states. These states are converted into character representations using the [`Into<char>`] trait. The available characters for representation are:
+//! - `FULL_C`: Full-filled character ('█')
+//! - `UPPER_C`: Upper half-filled character ('▀')
+//! - `LOWER_C`: Lower half-filled character ('▄')
+//! - `EMPTY_C`: Empty character (' ')
+//!
+//! ## Usage
+//!
+//! - Create a new canvas with a specified width and height using `Canvas::new(width, height)`.
+//! - Modify pixels or set their states using `set_pixel` or `set` methods.
+//! - Convert the canvas to a string representation using `to_string()`.
+//!
+//! ## Examples
+//!
+//! ```rust
+//!    // Draw a 10x10 square
+//!    let height: usize = 10;
+//!    let width: usize = 10;
+//!
+//!    let mut square = Canvas::new(width, height);
+//!    for i in 0..height {
+//!        for j in 0..width {
+//!            if i == 0 || i == height - 1 || j == 0 || j == width - 1 {
+//!                square.set(j, i, true)
+//!            }
+//!        }
+//!    }
+//!    println!("{}", square.to_string());
+//! ```
+//!
+//! ## Drawing Functions
+//!
+//! The library also provides a `clear` function, which clears the console screen using ANSI escape codes.
+
 const FULL_C: char = '█';
 const LOWER_C: char = '▄';
 const UPPER_C: char = '▀';
@@ -8,21 +48,21 @@ const EMPTY_C: char = ' ';
 /// Each pixel can have an upper and lower state, to be converted into a character
 /// representation based on its state using the [`Into<char>`] trait.
 #[derive(Debug, Clone)]
-pub struct Pixel {
+pub struct DuoPixel {
     upper: bool,
     lower: bool,
 }
 
-impl From<(bool, bool)> for Pixel {
+impl From<(bool, bool)> for DuoPixel {
     fn from(value: (bool, bool)) -> Self {
-        Pixel {
+        DuoPixel {
             upper: value.0,
             lower: value.1,
         }
     }
 }
 
-impl Into<char> for Pixel {
+impl Into<char> for DuoPixel {
     fn into(self) -> char {
         match (self.lower, self.upper) {
             (true, true) => FULL_C,
@@ -38,15 +78,15 @@ impl Into<char> for Pixel {
 /// Each row is composed of a vector of `Pixel` instances and
 /// can be converted into a string using the `Into<String>` trait.
 #[derive(Debug, Clone)]
-pub struct Row(Vec<Pixel>);
+pub struct Row(Vec<DuoPixel>);
 
 impl From<(Vec<bool>, Vec<bool>)> for Row {
     fn from(value: (Vec<bool>, Vec<bool>)) -> Self {
-        let pixels: Vec<Pixel> = value
+        let pixels: Vec<DuoPixel> = value
             .0
             .iter()
             .zip(value.1.iter())
-            .map(|(&u, &l)| Pixel { upper: u, lower: l })
+            .map(|(&u, &l)| DuoPixel { upper: u, lower: l })
             .collect();
         Row(pixels)
     }
@@ -91,7 +131,7 @@ impl Canvas {
         s
     }
 
-    pub fn set_pixel(&mut self, x: usize, y: usize, pixel: Pixel) {
+    pub fn set_pixel(&mut self, x: usize, y: usize, pixel: DuoPixel) {
         self.0[y].0[x] = pixel;
     }
 
