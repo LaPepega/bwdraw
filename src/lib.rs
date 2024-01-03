@@ -166,6 +166,13 @@ impl Canvas {
             .collect::<Vec<Vec<bool>>>()
             .into()
     }
+
+    pub fn clear(&mut self) {
+        *self = Canvas::new(
+            self.0.len(),
+            self.0.get(0).unwrap_or(&Row(Vec::new())).0.len(),
+        )
+    }
 }
 
 impl Into<Vec<Vec<bool>>> for Canvas {
@@ -221,7 +228,7 @@ impl Into<String> for Canvas {
 /// Clears the console screen.
 ///
 /// This function sends ANSI escape codes to clear the console screen.
-pub fn clear() {
+pub fn clear_screen() {
     print!("{}[2J", 27 as char);
     print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
 }
