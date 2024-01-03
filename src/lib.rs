@@ -140,7 +140,8 @@ impl Canvas {
         *self = new_pic;
     }
 
-    /// Parse canvas from string specifying chars representing active and inactive pixels
+    /// Parse canvas from string specifying chars representing active and inactive pixels.
+    /// Any unspecified chars will be interpreted as active
     pub fn parse(str_pic: &str, active: char, inactive: char) -> Self {
         str_pic
             .lines()
