@@ -140,6 +140,11 @@ impl Canvas {
         *self = new_pic;
     }
 
+    pub fn get(&self, x: usize, y: usize) -> bool {
+        let subpixeled: Vec<Vec<bool>> = self.clone().into();
+        subpixeled[y][x]
+    }
+
     /// Parse canvas from string specifying chars representing active and inactive pixels.
     /// Any unspecified chars will be interpreted as active
     pub fn parse(str_pic: &str, active: char, inactive: char) -> Self {
