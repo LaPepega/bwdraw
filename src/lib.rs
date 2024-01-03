@@ -139,6 +139,27 @@ impl Canvas {
         let new_pic = Canvas::from(subpixeled);
         *self = new_pic;
     }
+
+    /// Parse canvas from string specifying chars representing active and inactive pixels
+    pub fn parse(str_pic: &str, active: char, inactive: char) -> Self {
+        str_pic
+            .lines()
+            .map(|l| {
+                l.chars()
+                    .map(|c| {
+                        if c == active {
+                            true
+                        } else if c == inactive {
+                            false
+                        } else {
+                            true
+                        }
+                    })
+                    .collect::<Vec<bool>>()
+            })
+            .collect::<Vec<Vec<bool>>>()
+            .into()
+    }
 }
 
 impl Into<Vec<Vec<bool>>> for Canvas {
