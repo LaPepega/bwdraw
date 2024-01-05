@@ -250,7 +250,29 @@ mod tests {
 
     #[test]
     fn from_even_vec_of_bools_to_canvas() {
-        todo!()
+        let bools = vec![
+            vec![true, true, false, false],
+            vec![true, false, true, false],
+        ];
+        let expected = Canvas(vec![Row(vec![
+            DuoPixel {
+                upper: true,
+                lower: true,
+            },
+            DuoPixel {
+                upper: true,
+                lower: false,
+            },
+            DuoPixel {
+                upper: false,
+                lower: true,
+            },
+            DuoPixel {
+                upper: false,
+                lower: false,
+            },
+        ])]);
+        assert_eq!(Canvas::from(bools), expected);
     }
 
     #[test]
