@@ -67,6 +67,12 @@ impl Into<char> for DuoPixel {
     }
 }
 
+impl PartialEq for DuoPixel {
+    fn eq(&self, other: &Self) -> bool {
+        self.upper == other.upper && self.lower == other.lower
+    }
+}
+
 /// Represents a row of pixels in the drawing canvas.
 ///
 /// Each row is composed of a vector of `Pixel` instances and
@@ -105,6 +111,12 @@ impl Into<String> for Row {
                 c
             })
             .collect()
+    }
+}
+
+impl PartialEq for Row {
+    fn eq(&self, other: &Self) -> bool {
+        self.0 == other.0
     }
 }
 
@@ -215,6 +227,12 @@ impl Into<String> for Canvas {
                 s + "\n"
             })
             .collect()
+    }
+}
+
+impl PartialEq for Canvas {
+    fn eq(&self, other: &Self) -> bool {
+        self.0 == other.0
     }
 }
 
