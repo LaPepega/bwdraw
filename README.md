@@ -1,4 +1,5 @@
- # bwdraw
+![crates.io](https://img.shields.io/crates/v/bwdraw.svg) 
+# bwdraw
 
  `bwdraw` is a Rust library designed for simple black and white 2D drawing in the terminal. It uses half-filled characters as pixels, allowing for a square-shaped representation without stretching the y-axis. The library provides a convenient way to draw with half-filled ASCII characters by representing the canvas as a grid of booleans and converting them into characters accordingly.
 
