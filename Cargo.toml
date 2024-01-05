@@ -1,6 +1,6 @@
 [package]
 name = "bwdraw"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["LaPepega <tmv03092008@gmail.com>"]
 description = "Terminal drawing library whithout y-axis stretching"

@@ -32,9 +32,9 @@
 //!
 //! The library also provides a `clear` function, which clears the console screen using ANSI escape codes.
 
-pub const FULL_C: char = '█';
-pub const LOWER_C: char = '▄';
-pub const UPPER_C: char = '▀';
+pub const FULL_C: char = '\u{2588}';
+pub const LOWER_C: char = '\u{2584}';
+pub const UPPER_C: char = '\u{2580}';
 pub const EMPTY_C: char = ' ';
 
 /// Represents a single pixel in the drawing canvas.
@@ -116,24 +116,55 @@ impl Into<String> for Row {
 pub struct Canvas(Vec<Row>);
 
 impl Canvas {
+    /// Creates new empty [`Canvas`] with set `width` and `height`
     pub fn new(width: usize, height: usize) -> Self {
         Canvas::from(vec![vec![false; width]; height])
     }
 
+    /// Returns [`String`] representation of [`Canvas`]
     pub fn to_string(&self) -> String {
         let s: String = self.clone().into();
         s
     }
 
+    /// Sets a [`DuoPixel`] on [`Canvas`] to specified one
     pub fn set_pixel(&mut self, x: usize, y: usize, pixel: DuoPixel) {
         self.0[y].0[x] = pixel;
     }
 
+    /// Sets a state of square pixel on canvas
     pub fn set(&mut self, x: usize, y: usize, state: bool) {
         let mut subpixeled: Vec<Vec<bool>> = self.clone().into();
         subpixeled[y][x] = state;
         let new_pic = Canvas::from(subpixeled);
         *self = new_pic;
+    }
+
+    pub fn get(&self, x: usize, y: usize) -> bool {
+        let subpixeled: Vec<Vec<bool>> = self.clone().into();
+        subpixeled[y][x]
+    }
+
+    /// Parse canvas from string specifying chars representing active and inactive pixels.
+    /// Any unspecified chars will be interpreted as active
+    pub fn parse(str_pic: &str, active: char, inactive: char) -> Self {
+        str_pic
+            .lines()
+            .map(|l| {
+                l.chars()
+                    .map(|c| {
+                        if c == active {
+                            true
+                        } else if c == inactive {
+                            false
+                        } else {
+                            true
+                        }
+                    })
+                    .collect::<Vec<bool>>()
+            })
+            .collect::<Vec<Vec<bool>>>()
+            .into()
     }
 }
 
