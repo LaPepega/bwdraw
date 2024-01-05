@@ -231,17 +231,17 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_conversion_from_vec_of_bools_to_picture() {
+    fn from_even_vec_of_bools_to_canvas() {
         todo!()
     }
 
     #[test]
-    fn test_conversion_from_odd_number_of_rows_to_picture() {
+    fn from_odd_vec_of_bools_to_canvas() {
         todo!()
     }
 
     #[test]
-    fn test_conversion_from_empty_input_to_picture() {
+    fn from_empty_input_to_canvas() {
         let input: Vec<Vec<bool>> = Vec::new();
 
         let expected_output = "";
