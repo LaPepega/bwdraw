@@ -67,6 +67,12 @@ impl Into<char> for DuoPixel {
     }
 }
 
+impl PartialEq for DuoPixel {
+    fn eq(&self, other: &Self) -> bool {
+        self.upper == other.upper && self.lower == other.lower
+    }
+}
+
 /// Represents a row of pixels in the drawing canvas.
 ///
 /// Each row is composed of a vector of `Pixel` instances and
@@ -105,6 +111,12 @@ impl Into<String> for Row {
                 c
             })
             .collect()
+    }
+}
+
+impl PartialEq for Row {
+    fn eq(&self, other: &Self) -> bool {
+        self.0 == other.0
     }
 }
 
@@ -218,6 +230,12 @@ impl Into<String> for Canvas {
     }
 }
 
+impl PartialEq for Canvas {
+    fn eq(&self, other: &Self) -> bool {
+        self.0 == other.0
+    }
+}
+
 /// Clears the console screen.
 ///
 /// This function sends ANSI escape codes to clear the console screen.
@@ -231,17 +249,82 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_conversion_from_vec_of_bools_to_picture() {
-        todo!()
+    fn from_even_vec_of_bools_to_canvas() {
+        let bools = vec![
+            vec![true, true, false, false],
+            vec![true, false, true, false],
+        ];
+        let expected = Canvas(vec![Row(vec![
+            DuoPixel {
+                upper: true,
+                lower: true,
+            },
+            DuoPixel {
+                upper: true,
+                lower: false,
+            },
+            DuoPixel {
+                upper: false,
+                lower: true,
+            },
+            DuoPixel {
+                upper: false,
+                lower: false,
+            },
+        ])]);
+        assert_eq!(Canvas::from(bools), expected);
     }
 
     #[test]
-    fn test_conversion_from_odd_number_of_rows_to_picture() {
-        todo!()
+    fn from_odd_vec_of_bools_to_canvas() {
+        let bools = vec![
+            vec![true, false, true, false],
+            vec![false, true, false, true],
+            vec![true, false, true, false],
+        ];
+        let expected = Canvas(vec![
+            Row(vec![
+                DuoPixel {
+                    upper: true,
+                    lower: false,
+                },
+                DuoPixel {
+                    upper: false,
+                    lower: true,
+                },
+                DuoPixel {
+                    upper: true,
+                    lower: false,
+                },
+                DuoPixel {
+                    upper: false,
+                    lower: true,
+                },
+            ]),
+            Row(vec![
+                DuoPixel {
+                    upper: true,
+                    lower: false,
+                },
+                DuoPixel {
+                    upper: false,
+                    lower: false,
+                },
+                DuoPixel {
+                    upper: true,
+                    lower: false,
+                },
+                DuoPixel {
+                    upper: false,
+                    lower: false,
+                },
+            ]),
+        ]);
+        assert_eq!(Canvas::from(bools), expected);
     }
 
     #[test]
-    fn test_conversion_from_empty_input_to_picture() {
+    fn from_empty_input_to_canvas() {
         let input: Vec<Vec<bool>> = Vec::new();
 
         let expected_output = "";
