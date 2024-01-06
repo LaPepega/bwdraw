@@ -143,12 +143,6 @@ impl Canvas {
         Canvas::from(vec![vec![false; width]; height])
     }
 
-    /// Returns [`String`] representation of [`Canvas`]
-    pub fn to_string(&self) -> String {
-        let s: String = self.clone().into();
-        s
-    }
-
     /// Sets a [`DuoPixel`] on [`Canvas`] to specified one and return [`DuoPixel`] which was previously there.
     /// Returns [`None`] if `(x,y)` is out of bounds
     pub fn set_duopixel(&mut self, x: usize, y: usize, pixel: DuoPixel) -> Option<DuoPixel> {
@@ -224,6 +218,13 @@ impl Canvas {
             })
             .collect::<Vec<Vec<bool>>>()
             .into()
+    }
+}
+
+impl ToString for Canvas {
+    fn to_string(&self) -> String {
+        let s: String = self.clone().into();
+        s
     }
 }
 
