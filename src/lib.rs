@@ -253,6 +253,12 @@ impl From<Vec<Vec<bool>>> for Canvas {
     }
 }
 
+impl Into<Vec<Row>> for Canvas {
+    fn into(self) -> Vec<Row> {
+        self.0
+    }
+}
+
 impl Into<String> for Canvas {
     fn into(self) -> String {
         self.0
