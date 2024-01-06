@@ -244,6 +244,7 @@ impl Canvas {
             .into()
     }
 
+    /// Inverts existing [`Canvas`]
     pub fn invert(&mut self) {
         let subpixeled: Vec<Vec<bool>> = self.clone().into();
         let inverted: Vec<Vec<bool>> = subpixeled
