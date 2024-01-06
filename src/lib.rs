@@ -60,6 +60,12 @@ impl From<(bool, bool)> for DuoPixel {
     }
 }
 
+impl Into<(bool, bool)> for DuoPixel {
+    fn into(self) -> (bool, bool) {
+        (self.upper, self.lower)
+    }
+}
+
 impl Into<char> for DuoPixel {
     fn into(self) -> char {
         match (self.lower, self.upper) {
