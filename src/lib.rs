@@ -244,6 +244,15 @@ impl Canvas {
             .into()
     }
 
+    pub fn invert(&mut self) {
+        let subpixeled: Vec<Vec<bool>> = self.clone().into();
+        let inverted: Vec<Vec<bool>> = subpixeled
+            .iter()
+            .map(|r| r.iter().map(|p| !p).collect())
+            .collect();
+        *self = inverted.into();
+    }
+
     /// Returns inverted [`Canvas`]
     pub fn inverted(&self) -> Self {
         let subpixeled: Vec<Vec<bool>> = self.clone().into();
