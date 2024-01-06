@@ -13,6 +13,7 @@
 //! ## Examples
 //!
 //! ```rust
+//! use bwdraw::Canvas;
 //!    // Draw a 10x10 square
 //!    let height: usize = 10;
 //!    let width: usize = 10;
@@ -31,6 +32,11 @@
 //! ## Drawing Functions
 //!
 //! The library also provides a `clear` function, which clears the console screen using ANSI escape codes.
+
+use std::ops::Deref;
+
+#[cfg(test)]
+mod tests;
 
 pub const FULL_C: char = '\u{2588}';
 pub const LOWER_C: char = '\u{2584}';
@@ -53,6 +59,12 @@ impl From<(bool, bool)> for DuoPixel {
             upper: value.0,
             lower: value.1,
         }
+    }
+}
+
+impl Into<(bool, bool)> for DuoPixel {
+    fn into(self) -> (bool, bool) {
+        (self.upper, self.lower)
     }
 }
 
@@ -79,6 +91,14 @@ impl PartialEq for DuoPixel {
 /// can be converted into a string using the `Into<String>` trait.
 #[derive(Debug, Clone)]
 pub struct Row(Vec<DuoPixel>);
+
+impl Deref for Row {
+    type Target = Vec<DuoPixel>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 
 impl From<(Vec<bool>, Vec<bool>)> for Row {
     fn from(value: (Vec<bool>, Vec<bool>)) -> Self {
@@ -133,28 +153,73 @@ impl Canvas {
         Canvas::from(vec![vec![false; width]; height])
     }
 
-    /// Returns [`String`] representation of [`Canvas`]
-    pub fn to_string(&self) -> String {
-        let s: String = self.clone().into();
-        s
+    /// Sets a [`DuoPixel`] on [`Canvas`] to specified one and return [`DuoPixel`] which was previously there.
+    /// Returns [`None`] if `(x,y)` is out of bounds
+    pub fn mut_set_duopixel(&mut self, x: usize, y: usize, pixel: DuoPixel) -> Option<DuoPixel> {
+        let original = self.0.get_mut(y)?.0.get_mut(x)?;
+        let orig = original.clone();
+        *original = pixel;
+        Some(orig)
     }
 
-    /// Sets a [`DuoPixel`] on [`Canvas`] to specified one
-    pub fn set_pixel(&mut self, x: usize, y: usize, pixel: DuoPixel) {
-        self.0[y].0[x] = pixel;
+    /// Get [`DuoPixel`] at `(x,y)`
+    /// Returns [`None`] if `(x,y)` is out of bounds
+    pub fn get_duopixel(&self, x: usize, y: usize) -> Option<DuoPixel> {
+        let pix = self.0.get(y)?.0.get(x)?;
+        Some(pix.clone())
     }
 
-    /// Sets a state of square pixel on canvas
-    pub fn set(&mut self, x: usize, y: usize, state: bool) {
+    /// Inverts state of pixel at `(x,y)` on existing Canvas and returns resulting Canvas
+    /// Returns [`None`] if `(x,y)` is out of bounds
+    pub fn mut_invert_pixel(&mut self, x: usize, y: usize) -> Option<Canvas> {
         let mut subpixeled: Vec<Vec<bool>> = self.clone().into();
-        subpixeled[y][x] = state;
+        let orig = subpixeled.get_mut(y)?.get_mut(x)?;
+        *orig = !orig.clone();
+
         let new_pic = Canvas::from(subpixeled);
-        *self = new_pic;
+
+        *self = new_pic.clone();
+        Some(new_pic)
     }
 
-    pub fn get(&self, x: usize, y: usize) -> bool {
+    /// Returns new Canvas with inverted pixel at `(x,y)`
+    /// Returns [`None`] if `(x,y)` is out of bounds
+    pub fn invert_pixel(&self, x: usize, y: usize) -> Option<Canvas> {
+        let mut subpixeled: Vec<Vec<bool>> = self.clone().into();
+        let orig = subpixeled.get_mut(y)?.get_mut(x)?;
+        *orig = !orig.clone();
+
+        let new_pic = Canvas::from(subpixeled);
+
+        Some(new_pic)
+    }
+
+    /// Sets a state of square pixel on existing [`Canvas`] and returns the resulting [`Canvas`].
+    /// Returns [`None`] if `(x,y)` is out of bounds
+    pub fn mut_set(&mut self, x: usize, y: usize, state: bool) -> Option<Self> {
+        let mut subpixeled: Vec<Vec<bool>> = self.clone().into();
+        *subpixeled.get_mut(y)?.get_mut(x)? = state;
+
+        let new_pic = Canvas::from(subpixeled);
+
+        *self = new_pic.clone();
+        Some(new_pic)
+    }
+
+    /// Returns a new canvas with set state of square pixel at `(x,y)`
+    /// Returns [`None`] if `(x,y)` is out of bounds
+    pub fn set(&self, x: usize, y: usize, state: bool) -> Option<Self> {
+        let mut subpixeled: Vec<Vec<bool>> = self.clone().into();
+        *subpixeled.get_mut(y)?.get_mut(x)? = state;
+        let new_pic = Canvas::from(subpixeled);
+        Some(new_pic)
+    }
+
+    /// Gets state of square pixel at `(x,y)`.
+    /// Returns [`None`] if `(x,y)` is out of bounds.
+    pub fn get(&self, x: usize, y: usize) -> Option<bool> {
         let subpixeled: Vec<Vec<bool>> = self.clone().into();
-        subpixeled[y][x]
+        Some(subpixeled.get(y)?.get(x)?.clone())
     }
 
     /// Parse canvas from string specifying chars representing active and inactive pixels.
@@ -177,6 +242,41 @@ impl Canvas {
             })
             .collect::<Vec<Vec<bool>>>()
             .into()
+    }
+
+    /// Inverts existing [`Canvas`]
+    pub fn invert(&mut self) {
+        let subpixeled: Vec<Vec<bool>> = self.clone().into();
+        let inverted: Vec<Vec<bool>> = subpixeled
+            .iter()
+            .map(|r| r.iter().map(|p| !p).collect())
+            .collect();
+        *self = inverted.into();
+    }
+
+    /// Returns inverted [`Canvas`]
+    pub fn inverted(&self) -> Self {
+        let subpixeled: Vec<Vec<bool>> = self.clone().into();
+        let inverted: Vec<Vec<bool>> = subpixeled
+            .iter()
+            .map(|r| r.iter().map(|p| !p).collect())
+            .collect();
+        inverted.into()
+    }
+}
+
+impl Deref for Canvas {
+    type Target = Vec<Row>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl ToString for Canvas {
+    fn to_string(&self) -> String {
+        let s: String = self.clone().into();
+        s
     }
 }
 
@@ -217,6 +317,12 @@ impl From<Vec<Vec<bool>>> for Canvas {
     }
 }
 
+impl Into<Vec<Row>> for Canvas {
+    fn into(self) -> Vec<Row> {
+        self.0
+    }
+}
+
 impl Into<String> for Canvas {
     fn into(self) -> String {
         self.0
@@ -242,96 +348,4 @@ impl PartialEq for Canvas {
 pub fn clear() {
     print!("{}[2J", 27 as char);
     print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn from_even_vec_of_bools_to_canvas() {
-        let bools = vec![
-            vec![true, true, false, false],
-            vec![true, false, true, false],
-        ];
-        let expected = Canvas(vec![Row(vec![
-            DuoPixel {
-                upper: true,
-                lower: true,
-            },
-            DuoPixel {
-                upper: true,
-                lower: false,
-            },
-            DuoPixel {
-                upper: false,
-                lower: true,
-            },
-            DuoPixel {
-                upper: false,
-                lower: false,
-            },
-        ])]);
-        assert_eq!(Canvas::from(bools), expected);
-    }
-
-    #[test]
-    fn from_odd_vec_of_bools_to_canvas() {
-        let bools = vec![
-            vec![true, false, true, false],
-            vec![false, true, false, true],
-            vec![true, false, true, false],
-        ];
-        let expected = Canvas(vec![
-            Row(vec![
-                DuoPixel {
-                    upper: true,
-                    lower: false,
-                },
-                DuoPixel {
-                    upper: false,
-                    lower: true,
-                },
-                DuoPixel {
-                    upper: true,
-                    lower: false,
-                },
-                DuoPixel {
-                    upper: false,
-                    lower: true,
-                },
-            ]),
-            Row(vec![
-                DuoPixel {
-                    upper: true,
-                    lower: false,
-                },
-                DuoPixel {
-                    upper: false,
-                    lower: false,
-                },
-                DuoPixel {
-                    upper: true,
-                    lower: false,
-                },
-                DuoPixel {
-                    upper: false,
-                    lower: false,
-                },
-            ]),
-        ]);
-        assert_eq!(Canvas::from(bools), expected);
-    }
-
-    #[test]
-    fn from_empty_input_to_canvas() {
-        let input: Vec<Vec<bool>> = Vec::new();
-
-        let expected_output = "";
-
-        let picture: Canvas = input.into();
-        let output_string: String = picture.into();
-
-        assert_eq!(output_string, expected_output);
-    }
 }
