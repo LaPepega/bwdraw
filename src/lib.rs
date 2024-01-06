@@ -159,6 +159,8 @@ impl Canvas {
         Some(pix.clone())
     }
 
+    /// Inverts state of pixel at `(x,y)` on existing Canvas and returns resulting Canvas
+    /// Returns [`None`] if `(x,y)` is out of bounds
     pub fn mut_invert_pixel(&mut self, x: usize, y: usize) -> Option<Canvas> {
         let mut subpixeled: Vec<Vec<bool>> = self.clone().into();
         let orig = subpixeled.get_mut(y)?.get_mut(x)?;
@@ -167,6 +169,18 @@ impl Canvas {
         let new_pic = Canvas::from(subpixeled);
 
         *self = new_pic.clone();
+        Some(new_pic)
+    }
+
+    /// Returns new Canvas with inverted pixel at `(x,y)`
+    /// Returns [`None`] if `(x,y)` is out of bounds
+    pub fn invert_pixel(&self, x: usize, y: usize) -> Option<Canvas> {
+        let mut subpixeled: Vec<Vec<bool>> = self.clone().into();
+        let orig = subpixeled.get_mut(y)?.get_mut(x)?;
+        *orig = !orig.clone();
+
+        let new_pic = Canvas::from(subpixeled);
+
         Some(new_pic)
     }
 
