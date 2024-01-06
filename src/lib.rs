@@ -151,7 +151,7 @@ impl Canvas {
 
     /// Sets a [`DuoPixel`] on [`Canvas`] to specified one and return [`DuoPixel`] which was previously there.
     /// Returns [`None`] if `(x,y)` is out of bounds
-    pub fn set_pixel(&mut self, x: usize, y: usize, pixel: DuoPixel) -> Option<DuoPixel> {
+    pub fn set_duopixel(&mut self, x: usize, y: usize, pixel: DuoPixel) -> Option<DuoPixel> {
         let original = self.0.get_mut(y)?.0.get_mut(x)?;
         let orig = original.clone();
         *original = pixel;
@@ -160,7 +160,7 @@ impl Canvas {
 
     /// Get [`DuoPixel`] at `(x,y)`
     /// Returns [`None`] if `(x,y)` is out of bounds
-    pub fn get_pixel(&self, x: usize, y: usize) -> Option<DuoPixel> {
+    pub fn get_duopixel(&self, x: usize, y: usize) -> Option<DuoPixel> {
         let pix = self.0.get(y)?.0.get(x)?;
         Some(pix.clone())
     }
