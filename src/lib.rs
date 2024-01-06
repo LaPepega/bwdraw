@@ -143,13 +143,17 @@ impl Canvas {
         s
     }
 
-    /// Sets a [`DuoPixel`] on [`Canvas`] to specified one
-    pub fn set_pixel(&mut self, x: usize, y: usize, pixel: DuoPixel) {
-        self.0[y].0[x] = pixel;
+    /// Sets a [`DuoPixel`] on [`Canvas`] to specified one and return [`DuoPixel`] which was previously there.
+    /// Returns [`None`] if `(x,y)` is out of bounds
+    pub fn set_pixel(&mut self, x: usize, y: usize, pixel: DuoPixel) -> Option<DuoPixel> {
+        let original = self.0.get_mut(y)?.0.get_mut(x)?;
+        let orig = original.clone();
+        *original = pixel;
+        Some(orig)
     }
 
     /// Sets a state of square pixel on existing [`Canvas`] and returns the resulting [`Canvas`].
-    /// Returns None if `(x,y)` is out of bounds
+    /// Returns [`None`] if `(x,y)` is out of bounds
     pub fn set_mut(&mut self, x: usize, y: usize, state: bool) -> Option<Self> {
         let mut subpixeled: Vec<Vec<bool>> = self.clone().into();
         *subpixeled.get_mut(y)?.get_mut(x)? = state;
