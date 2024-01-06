@@ -165,9 +165,20 @@ impl Canvas {
         Some(pix.clone())
     }
 
+    pub fn mut_invert_pixel(&mut self, x: usize, y: usize) -> Option<Canvas> {
+        let mut subpixeled: Vec<Vec<bool>> = self.clone().into();
+        let orig = subpixeled.get_mut(y)?.get_mut(x)?;
+        *orig = !orig.clone();
+
+        let new_pic = Canvas::from(subpixeled);
+
+        *self = new_pic.clone();
+        Some(new_pic)
+    }
+
     /// Sets a state of square pixel on existing [`Canvas`] and returns the resulting [`Canvas`].
     /// Returns [`None`] if `(x,y)` is out of bounds
-    pub fn set_mut(&mut self, x: usize, y: usize, state: bool) -> Option<Self> {
+    pub fn mut_set(&mut self, x: usize, y: usize, state: bool) -> Option<Self> {
         let mut subpixeled: Vec<Vec<bool>> = self.clone().into();
         *subpixeled.get_mut(y)?.get_mut(x)? = state;
 
