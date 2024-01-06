@@ -167,9 +167,9 @@ impl Canvas {
         Some(new_pic)
     }
 
-    pub fn get(&self, x: usize, y: usize) -> bool {
+    pub fn get(&self, x: usize, y: usize) -> Option<bool> {
         let subpixeled: Vec<Vec<bool>> = self.clone().into();
-        subpixeled[y][x]
+        Some(subpixeled.get(y)?.get(x)?.clone())
     }
 
     /// Parse canvas from string specifying chars representing active and inactive pixels.
