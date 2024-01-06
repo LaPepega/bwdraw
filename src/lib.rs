@@ -152,6 +152,13 @@ impl Canvas {
         Some(orig)
     }
 
+    /// Get [`DuoPixel`] at `(x,y)`
+    /// Returns [`None`] if `(x,y)` is out of bounds
+    pub fn get_pixel(&self, x: usize, y: usize) -> Option<DuoPixel> {
+        let pix = self.0.get(y)?.0.get(x)?;
+        Some(pix.clone())
+    }
+
     /// Sets a state of square pixel on existing [`Canvas`] and returns the resulting [`Canvas`].
     /// Returns [`None`] if `(x,y)` is out of bounds
     pub fn set_mut(&mut self, x: usize, y: usize, state: bool) -> Option<Self> {
