@@ -33,6 +33,8 @@
 //!
 //! The library also provides a `clear` function, which clears the console screen using ANSI escape codes.
 
+use std::ops::Deref;
+
 #[cfg(test)]
 mod tests;
 
@@ -89,6 +91,14 @@ impl PartialEq for DuoPixel {
 /// can be converted into a string using the `Into<String>` trait.
 #[derive(Debug, Clone)]
 pub struct Row(Vec<DuoPixel>);
+
+impl Deref for Row {
+    type Target = Vec<DuoPixel>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 
 impl From<(Vec<bool>, Vec<bool>)> for Row {
     fn from(value: (Vec<bool>, Vec<bool>)) -> Self {
@@ -232,6 +242,14 @@ impl Canvas {
             })
             .collect::<Vec<Vec<bool>>>()
             .into()
+    }
+}
+
+impl Deref for Canvas {
+    type Target = Vec<Row>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
 
