@@ -13,6 +13,7 @@
 //! ## Examples
 //!
 //! ```rust
+//!    use bwdraw::Canvas;
 //!    // Draw a 10x10 square
 //!    let height: usize = 10;
 //!    let width: usize = 10;
@@ -31,6 +32,9 @@
 //! ## Drawing Functions
 //!
 //! The library also provides a `clear` function, which clears the console screen using ANSI escape codes.
+
+#[cfg(test)]
+mod tests;
 
 pub const FULL_C: char = '\u{2588}';
 pub const LOWER_C: char = '\u{2584}';
@@ -242,96 +246,4 @@ impl PartialEq for Canvas {
 pub fn clear() {
     print!("{}[2J", 27 as char);
     print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn from_even_vec_of_bools_to_canvas() {
-        let bools = vec![
-            vec![true, true, false, false],
-            vec![true, false, true, false],
-        ];
-        let expected = Canvas(vec![Row(vec![
-            DuoPixel {
-                upper: true,
-                lower: true,
-            },
-            DuoPixel {
-                upper: true,
-                lower: false,
-            },
-            DuoPixel {
-                upper: false,
-                lower: true,
-            },
-            DuoPixel {
-                upper: false,
-                lower: false,
-            },
-        ])]);
-        assert_eq!(Canvas::from(bools), expected);
-    }
-
-    #[test]
-    fn from_odd_vec_of_bools_to_canvas() {
-        let bools = vec![
-            vec![true, false, true, false],
-            vec![false, true, false, true],
-            vec![true, false, true, false],
-        ];
-        let expected = Canvas(vec![
-            Row(vec![
-                DuoPixel {
-                    upper: true,
-                    lower: false,
-                },
-                DuoPixel {
-                    upper: false,
-                    lower: true,
-                },
-                DuoPixel {
-                    upper: true,
-                    lower: false,
-                },
-                DuoPixel {
-                    upper: false,
-                    lower: true,
-                },
-            ]),
-            Row(vec![
-                DuoPixel {
-                    upper: true,
-                    lower: false,
-                },
-                DuoPixel {
-                    upper: false,
-                    lower: false,
-                },
-                DuoPixel {
-                    upper: true,
-                    lower: false,
-                },
-                DuoPixel {
-                    upper: false,
-                    lower: false,
-                },
-            ]),
-        ]);
-        assert_eq!(Canvas::from(bools), expected);
-    }
-
-    #[test]
-    fn from_empty_input_to_canvas() {
-        let input: Vec<Vec<bool>> = Vec::new();
-
-        let expected_output = "";
-
-        let picture: Canvas = input.into();
-        let output_string: String = picture.into();
-
-        assert_eq!(output_string, expected_output);
-    }
 }
