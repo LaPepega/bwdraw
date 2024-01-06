@@ -148,7 +148,8 @@ impl Canvas {
         self.0[y].0[x] = pixel;
     }
 
-    /// Sets a state of square pixel on existing canvas
+    /// Sets a state of square pixel on existing [`Canvas`] and returns the resulting [`Canvas`].
+    /// Returns None if `(x,y)` is out of bounds
     pub fn set_mut(&mut self, x: usize, y: usize, state: bool) -> Option<Self> {
         let mut subpixeled: Vec<Vec<bool>> = self.clone().into();
         *subpixeled.get_mut(y)?.get_mut(x)? = state;
@@ -159,7 +160,8 @@ impl Canvas {
         Some(new_pic)
     }
 
-    /// Returns a new canvas with set state of square pixel at (x,y)
+    /// Returns a new canvas with set state of square pixel at `(x,y)`
+    /// Returns [`None`] if `(x,y)` is out of bounds
     pub fn set(&self, x: usize, y: usize, state: bool) -> Option<Self> {
         let mut subpixeled: Vec<Vec<bool>> = self.clone().into();
         *subpixeled.get_mut(y)?.get_mut(x)? = state;
@@ -167,6 +169,8 @@ impl Canvas {
         Some(new_pic)
     }
 
+    /// Gets state of square pixel at `(x,y)`.
+    /// Returns [`None`] if `(x,y)` is out of bounds.
     pub fn get(&self, x: usize, y: usize) -> Option<bool> {
         let subpixeled: Vec<Vec<bool>> = self.clone().into();
         Some(subpixeled.get(y)?.get(x)?.clone())
