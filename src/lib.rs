@@ -13,7 +13,7 @@
 //! ## Examples
 //!
 //! ```rust
-//!    use bwdraw::Canvas;
+//! use bwdraw::Canvas;
 //!    // Draw a 10x10 square
 //!    let height: usize = 10;
 //!    let width: usize = 10;
@@ -148,12 +148,23 @@ impl Canvas {
         self.0[y].0[x] = pixel;
     }
 
-    /// Sets a state of square pixel on canvas
-    pub fn set(&mut self, x: usize, y: usize, state: bool) {
+    /// Sets a state of square pixel on existing canvas
+    pub fn set_mut(&mut self, x: usize, y: usize, state: bool) -> Option<Self> {
         let mut subpixeled: Vec<Vec<bool>> = self.clone().into();
-        subpixeled[y][x] = state;
+        *subpixeled.get_mut(y)?.get_mut(x)? = state;
+
         let new_pic = Canvas::from(subpixeled);
-        *self = new_pic;
+
+        *self = new_pic.clone();
+        Some(new_pic)
+    }
+
+    /// Returns a new canvas with set state of square pixel at (x,y)
+    pub fn set(&self, x: usize, y: usize, state: bool) -> Option<Self> {
+        let mut subpixeled: Vec<Vec<bool>> = self.clone().into();
+        *subpixeled.get_mut(y)?.get_mut(x)? = state;
+        let new_pic = Canvas::from(subpixeled);
+        Some(new_pic)
     }
 
     pub fn get(&self, x: usize, y: usize) -> bool {
