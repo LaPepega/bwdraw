@@ -243,6 +243,16 @@ impl Canvas {
             .collect::<Vec<Vec<bool>>>()
             .into()
     }
+
+    /// Returns inverted [`Canvas`]
+    pub fn inverted(&self) -> Self {
+        let subpixeled: Vec<Vec<bool>> = self.clone().into();
+        let inverted: Vec<Vec<bool>> = subpixeled
+            .iter()
+            .map(|r| r.iter().map(|p| !p).collect())
+            .collect();
+        inverted.into()
+    }
 }
 
 impl Deref for Canvas {
